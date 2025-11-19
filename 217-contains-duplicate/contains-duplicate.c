@@ -1,32 +1,20 @@
-
-struct HashTable {
-    int key;             // The number from nums array
-    UT_hash_handle hh;   // Handle for the hash table library
-};
+#include <stdbool.h>
+#include <stdlib.h>
 
 bool containsDuplicate(int* nums, int numsSize) {
-    struct HashTable *set = NULL; // Initialize the hash set
-    struct HashTable *element = NULL;
-
-    for (int i = 0; i < numsSize; i++) {
-        int num = nums[i];
-
-        // 1. Try to find the number in the set
-        HASH_FIND_INT(set, &num, element);
-
-        // 2. If found, return true immediately
-        if (element != NULL) {
-            // Optional: Free memory before returning to be 100% clean
-            // (LeetCode usually accepts without freeing in void/bool functions)
-            return true; 
-        }
-
-        // 3. If not found, add it to the set
-        element = malloc(sizeof(struct HashTable));
-        element->key = num;
-        HASH_ADD_INT(set, key, element);
+    // qsort comparator written inside the function using a lambda-like static function
+    int compare(const void *a, const void *b) {
+        return (*(int*)a - *(int*)b);
     }
-    
-    // In a real system, you should iterate and free 'set' here
+
+    // Sort the array
+    qsort(nums, numsSize, sizeof(int), compare);
+
+    // Check consecutive elements
+    for (int i = 0; i < numsSize - 1; i++) {
+        if (nums[i] == nums[i + 1]) {
+            return true;
+        }
+    }
     return false;
 }
